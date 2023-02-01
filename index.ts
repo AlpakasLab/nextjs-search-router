@@ -4,11 +4,12 @@ const useSearchRouter = () => {
     const router = useRouter()
 
     const pathname = usePathname() ?? '/'
-    const href = new URL(pathname)
 
     const searchParams = useSearchParams()
 
     const addRouteParam = (paramName: string, paramValue: string): void => {
+        const href = new URL(pathname)
+        
         const param = searchParams.get(paramName)
 
         searchParams.forEach((value, key) => {
