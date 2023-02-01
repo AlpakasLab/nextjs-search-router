@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.1.2
+
+### Patch Changes
+
+- 677326b: fixed url creation
+
 ## 0.1.1
 
 ### Patch Changes
