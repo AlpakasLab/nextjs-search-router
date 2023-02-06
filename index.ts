@@ -1,68 +1,70 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
-const useSearchRouter = () => {
+interface SearchRouterProps {
+    baseUrl: string
+}
+
+interface SearchRouterReturn {
+    addRouteParam: (paramName: string, paramValue: string) => void
+    updateRouteParam: (paramName: string, paramValue: string) => void
+    removeRouteParam: (paramName: string, paramValue: string) => void
+    resetRoute: () => void
+}
+
+
+const useSearchRouter = ({ baseUrl }: SearchRouterProps): SearchRouterReturn => {
     const router = useRouter()
 
     const pathname = usePathname() ?? '/'
 
     const searchParams = useSearchParams()
 
+    const href = new URL(pathname, baseUrl)
+
+    searchParams.forEach((value, key) => {
+        href.searchParams.set(key, value)
+    })
+
     const addRouteParam = (paramName: string, paramValue: string): void => {
-        const href = new URL(pathname)
-        
         const param = searchParams.get(paramName)
 
-        searchParams.forEach((value, key) => {
-            href.searchParams.set(key, value)
-        })
-
-        href.searchParams.set(paramName, param ? `${param},${paramValue}`:paramValue)
-
-        router.push(
-            href.toString(),
+        href.searchParams.set(
+            paramName,
+            param ? `${param},${paramValue}` : paramValue
         )
+
+        router.push(href.toString())
     }
 
-    // const updateRouteParam = (paramName: string, paramValue: string): void => {
-    //     queryParams[paramName] = paramValue
+    const updateRouteParam = (paramName: string, paramValue: string): void => {
+        href.searchParams.set(paramName, paramValue)
 
-    //     router.push(
-    //         {
-    //             pathname: pathname,
-    //             query: queryParams
-    //         },
-    //         undefined
-    //     )
-    // }
+        router.push(href.toString())
+    }
 
-    // const removeRouteParam = (paramName: string, value: string): void => {
-    //     const paramText = queryParams[paramName]
+    const removeRouteParam = (paramName: string, paramValue: string): void => {
+        const param = searchParams.get(paramName)
 
-    //     if (typeof paramText === 'string') {
-    //         const paramItemsArray = paramText.split(',')
-    //         const paramRemoveIndex = paramItemsArray.findIndex(
-    //             (paramItem: string) => paramItem === value.toString()
-    //         )
+        if (!param) return
 
-    //         if (paramRemoveIndex !== -1) {
-    //             paramItemsArray.splice(paramRemoveIndex, 1)
-    //         }
+        const paramItemsArray = param.split(',')
 
-    //         if (paramItemsArray.length > 0) {
-    //             queryParams[paramName] = paramItemsArray.join(',')
-    //         } else {
-    //             delete queryParams[paramName]
-    //         }
-    //     }
+        const paramRemoveIndex = paramItemsArray.findIndex(
+            (paramItem: string) => paramItem === paramValue
+        )
 
-    //     router.push(
-    //         {
-    //             pathname: pathname,
-    //             query: queryParams
-    //         },
-    //         undefined
-    //     )
-    // }
+        if (paramRemoveIndex === -1) return
+
+        paramItemsArray.splice(paramRemoveIndex, 1)
+
+        if (paramItemsArray.length > 0) {
+            href.searchParams.set(paramName, paramItemsArray.join(','))
+        } else {
+            href.searchParams.delete(paramName)
+        }
+
+        router.push(href.toString())
+    }
 
     // const addRoutePath = (mainPath: string, path: string): void => {
     //     const mainPathValues = queryParams[mainPath]
@@ -144,21 +146,16 @@ const useSearchRouter = () => {
     //     )
     // }
 
-    // const resetRoute = (baseParam: string): void => {
-    //     for (const key in queryParams) {
-    //         if (baseParam !== key) {
-    //             delete queryParams[key]
-    //         }
-    //     }
-
-    //     router.replace({
-    //         pathname: pathname,
-    //         query: queryParams
-    //     })
-    // }
+    const resetRoute = (): void => {
+        const baseHref = new URL(pathname, baseUrl)
+        router.replace(baseHref.toString())
+    }
 
     return {
         addRouteParam,
+        updateRouteParam,
+        removeRouteParam,
+        resetRoute
     }
 }
 
