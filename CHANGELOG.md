@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.2.0
+
+### Minor Changes
+
+- b97e8b4: added new methods and fixed some errors in useSearchRouter hook
+
 ## 0.1.2
 
 ### Patch Changes
