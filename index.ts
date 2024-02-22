@@ -12,9 +12,9 @@ interface SearchRouterReturn {
   dispatch: () => void;
 }
 
-const useSearchRouter = (
-  props: SearchRouterProps | undefined
-): SearchRouterReturn => {
+const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
+  if (!props && !window) throw new Error("Window not found");
+
   const router = useRouter();
 
   const pathname = usePathname() ?? "/";
