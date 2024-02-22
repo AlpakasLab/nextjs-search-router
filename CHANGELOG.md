@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.1
+
+### Patch Changes
+
+- f453597: make props accept undefined object
+
 ## 0.3.0
 
 ### Minor Changes
