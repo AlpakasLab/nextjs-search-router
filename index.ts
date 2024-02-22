@@ -1,3 +1,4 @@
+import "client-only";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface SearchRouterProps {
@@ -13,8 +14,6 @@ interface SearchRouterReturn {
 }
 
 const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
-  if (!props && !window) throw new Error("Window not found");
-
   const router = useRouter();
 
   const pathname = usePathname() ?? "/";
