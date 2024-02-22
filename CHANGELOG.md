@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.2
+
+### Patch Changes
+
+- 3c3d935: fix window not found and props issue
+
 ## 0.3.1
 
 ### Patch Changes
