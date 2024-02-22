@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.3
+
+### Patch Changes
+
+- 09c76a2: add client only directives
+
 ## 0.3.2
 
 ### Patch Changes
