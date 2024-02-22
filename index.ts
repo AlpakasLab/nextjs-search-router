@@ -1,3 +1,5 @@
+"use client";
+
 import "client-only";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
