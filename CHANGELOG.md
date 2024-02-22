@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.0
+
+### Minor Changes
+
+- f38c1ec: added dynamic window location and dispatch method
+
 ## 0.2.0
 
 ### Minor Changes
