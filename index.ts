@@ -12,16 +12,16 @@ interface SearchRouterReturn {
   dispatch: () => void;
 }
 
-const useSearchRouter = ({
-  baseUrl,
-}: SearchRouterProps): SearchRouterReturn => {
+const useSearchRouter = (
+  props: SearchRouterProps | undefined
+): SearchRouterReturn => {
   const router = useRouter();
 
   const pathname = usePathname() ?? "/";
 
   const searchParams = useSearchParams();
 
-  const href = new URL(pathname, baseUrl ?? window.location.hostname);
+  const href = new URL(pathname, props?.baseUrl ?? window.location.hostname);
 
   searchParams.forEach((value, key) => {
     href.searchParams.set(key, value);
@@ -143,7 +143,10 @@ const useSearchRouter = ({
   // }
 
   const resetRoute = (): void => {
-    const baseHref = new URL(pathname, baseUrl ?? window.location.hostname);
+    const baseHref = new URL(
+      pathname,
+      props?.baseUrl ?? window.location.hostname
+    );
     router.replace(baseHref.toString());
   };
 
