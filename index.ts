@@ -1,162 +1,163 @@
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface SearchRouterProps {
-    baseUrl: string
+  baseUrl?: string;
 }
 
 interface SearchRouterReturn {
-    addRouteParam: (paramName: string, paramValue: string) => void
-    updateRouteParam: (paramName: string, paramValue: string) => void
-    removeRouteParam: (paramName: string, paramValue: string) => void
-    resetRoute: () => void
+  addRouteParam: (paramName: string, paramValue: string) => void;
+  updateRouteParam: (paramName: string, paramValue: string) => void;
+  removeRouteParam: (paramName: string, paramValue: string) => void;
+  resetRoute: () => void;
+  dispatch: () => void;
 }
 
+const useSearchRouter = ({
+  baseUrl,
+}: SearchRouterProps): SearchRouterReturn => {
+  const router = useRouter();
 
-const useSearchRouter = ({ baseUrl }: SearchRouterProps): SearchRouterReturn => {
-    const router = useRouter()
+  const pathname = usePathname() ?? "/";
 
-    const pathname = usePathname() ?? '/'
+  const searchParams = useSearchParams();
 
-    const searchParams = useSearchParams()
+  const href = new URL(pathname, baseUrl ?? window.location.hostname);
 
-    const href = new URL(pathname, baseUrl)
+  searchParams.forEach((value, key) => {
+    href.searchParams.set(key, value);
+  });
 
-    searchParams.forEach((value, key) => {
-        href.searchParams.set(key, value)
-    })
+  const addRouteParam = (paramName: string, paramValue: string): void => {
+    const param = searchParams.get(paramName);
 
-    const addRouteParam = (paramName: string, paramValue: string): void => {
-        const param = searchParams.get(paramName)
+    href.searchParams.set(
+      paramName,
+      param ? `${param},${paramValue}` : paramValue
+    );
+  };
 
-        href.searchParams.set(
-            paramName,
-            param ? `${param},${paramValue}` : paramValue
-        )
+  const updateRouteParam = (paramName: string, paramValue: string): void => {
+    href.searchParams.set(paramName, paramValue);
+  };
 
-        router.push(href.toString())
+  const removeRouteParam = (paramName: string, paramValue: string): void => {
+    const param = searchParams.get(paramName);
+
+    if (!param) return;
+
+    const paramItemsArray = param.split(",");
+
+    const paramRemoveIndex = paramItemsArray.findIndex(
+      (paramItem: string) => paramItem === paramValue
+    );
+
+    if (paramRemoveIndex === -1) return;
+
+    paramItemsArray.splice(paramRemoveIndex, 1);
+
+    if (paramItemsArray.length > 0) {
+      href.searchParams.set(paramName, paramItemsArray.join(","));
+    } else {
+      href.searchParams.delete(paramName);
     }
+  };
 
-    const updateRouteParam = (paramName: string, paramValue: string): void => {
-        href.searchParams.set(paramName, paramValue)
+  // const addRoutePath = (mainPath: string, path: string): void => {
+  //     const mainPathValues = queryParams[mainPath]
 
-        router.push(href.toString())
-    }
+  //     if(mainPathValues === undefined) return
 
-    const removeRouteParam = (paramName: string, paramValue: string): void => {
-        const param = searchParams.get(paramName)
+  //     if (typeof mainPathValues !== 'string') {
+  //         mainPathValues.push(path)
+  //     }
 
-        if (!param) return
+  //     queryParams[mainPath] = mainPathValues
 
-        const paramItemsArray = param.split(',')
+  //     router.push(
+  //         {
+  //             pathname: pathname,
+  //             query: queryParams
+  //         },
+  //         undefined
+  //     )
+  // }
 
-        const paramRemoveIndex = paramItemsArray.findIndex(
-            (paramItem: string) => paramItem === paramValue
-        )
+  // const updateRoutePath = (mainPath: string, newPath: string): void => {
+  //     queryParams[mainPath] = newPath.split('/')
 
-        if (paramRemoveIndex === -1) return
+  //     router.push(
+  //         {
+  //             pathname: pathname,
+  //             query: queryParams
+  //         },
+  //         undefined
+  //     )
+  // }
 
-        paramItemsArray.splice(paramRemoveIndex, 1)
+  // const removeRoutePath = (mainPath: string, value: string): void => {
+  //     const mainPathValues = queryParams[mainPath]
 
-        if (paramItemsArray.length > 0) {
-            href.searchParams.set(paramName, paramItemsArray.join(','))
-        } else {
-            href.searchParams.delete(paramName)
-        }
+  //     if(mainPathValues === undefined) return
 
-        router.push(href.toString())
-    }
+  //     if (
+  //         typeof mainPathValues !== 'string' &&
+  //         mainPathValues !== undefined
+  //     ) {
+  //         const routeRemoveIndex = mainPathValues.findIndex(
+  //             (routeValue: string) => routeValue === value.toString()
+  //         )
 
-    // const addRoutePath = (mainPath: string, path: string): void => {
-    //     const mainPathValues = queryParams[mainPath]
+  //         if (routeRemoveIndex !== -1) {
+  //             mainPathValues.splice(routeRemoveIndex, 1)
+  //         }
+  //     }
 
-    //     if(mainPathValues === undefined) return
+  //     queryParams[mainPath] = mainPathValues
 
-    //     if (typeof mainPathValues !== 'string') {
-    //         mainPathValues.push(path)
-    //     }
+  //     router.push(
+  //         {
+  //             pathname: pathname,
+  //             query: queryParams
+  //         },
+  //         undefined
+  //     )
+  // }
 
-    //     queryParams[mainPath] = mainPathValues
+  // const switchRoute = (
+  //     mainPath: string,
+  //     path: string,
+  //     removeParam: string,
+  //     newParams: Record<string, string>
+  // ): void => {
+  //     delete queryParams[removeParam]
 
-    //     router.push(
-    //         {
-    //             pathname: pathname,
-    //             query: queryParams
-    //         },
-    //         undefined
-    //     )
-    // }
+  //     const params = Object.assign(newParams, queryParams)
 
-    // const updateRoutePath = (mainPath: string, newPath: string): void => {
-    //     queryParams[mainPath] = newPath.split('/')
+  //     router.push(
+  //         {
+  //             pathname: `/${mainPath}/${path}`,
+  //             query: params
+  //         },
+  //         undefined
+  //     )
+  // }
 
-    //     router.push(
-    //         {
-    //             pathname: pathname,
-    //             query: queryParams
-    //         },
-    //         undefined
-    //     )
-    // }
+  const resetRoute = (): void => {
+    const baseHref = new URL(pathname, baseUrl ?? window.location.hostname);
+    router.replace(baseHref.toString());
+  };
 
-    // const removeRoutePath = (mainPath: string, value: string): void => {
-    //     const mainPathValues = queryParams[mainPath]
-        
-    //     if(mainPathValues === undefined) return
+  const dispatch = (): void => {
+    router.push(href.toString());
+  };
 
-    //     if (
-    //         typeof mainPathValues !== 'string' &&
-    //         mainPathValues !== undefined
-    //     ) {
-    //         const routeRemoveIndex = mainPathValues.findIndex(
-    //             (routeValue: string) => routeValue === value.toString()
-    //         )
+  return {
+    addRouteParam,
+    updateRouteParam,
+    removeRouteParam,
+    resetRoute,
+    dispatch,
+  };
+};
 
-    //         if (routeRemoveIndex !== -1) {
-    //             mainPathValues.splice(routeRemoveIndex, 1)
-    //         }
-    //     }
-
-    //     queryParams[mainPath] = mainPathValues
-
-    //     router.push(
-    //         {
-    //             pathname: pathname,
-    //             query: queryParams
-    //         },
-    //         undefined
-    //     )
-    // }
-
-    // const switchRoute = (
-    //     mainPath: string,
-    //     path: string,
-    //     removeParam: string,
-    //     newParams: Record<string, string>
-    // ): void => {
-    //     delete queryParams[removeParam]
-
-    //     const params = Object.assign(newParams, queryParams)
-
-    //     router.push(
-    //         {
-    //             pathname: `/${mainPath}/${path}`,
-    //             query: params
-    //         },
-    //         undefined
-    //     )
-    // }
-
-    const resetRoute = (): void => {
-        const baseHref = new URL(pathname, baseUrl)
-        router.replace(baseHref.toString())
-    }
-
-    return {
-        addRouteParam,
-        updateRouteParam,
-        removeRouteParam,
-        resetRoute
-    }
-}
-
-export { useSearchRouter }
+export { useSearchRouter };
