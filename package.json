@@ -1,7 +1,7 @@
 {
   "name": "@alpakaslab/nextjs-search-router",
   "license": "MIT",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
