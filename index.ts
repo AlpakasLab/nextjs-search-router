@@ -25,7 +25,7 @@ const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
   const [href, setHref] = useState<URL | null>(null);
 
   useEffect(() => {
-    if (href !== null || !window) return;
+    if (href !== null || typeof window === "undefined") return;
 
     const newHref = new URL(
       pathname,
@@ -73,6 +73,8 @@ const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
   };
 
   const resetRoute = (): void => {
+    if (typeof window === "undefined") return;
+
     const baseHref = new URL(
       pathname,
       props?.baseUrl ?? window.location.hostname
