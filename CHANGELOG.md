@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.5
+
+### Patch Changes
+
+- cbf76ff: fix window not defined issue
+
 ## 0.3.4
 
 ### Patch Changes
