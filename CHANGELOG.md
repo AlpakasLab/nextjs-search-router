@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.6
+
+### Patch Changes
+
+- 443c988: fix window location issue
+
 ## 0.3.5
 
 ### Patch Changes
