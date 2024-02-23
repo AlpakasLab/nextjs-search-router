@@ -25,7 +25,7 @@ const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
   const [href, setHref] = useState<URL | null>(null);
 
   useEffect(() => {
-    if (href !== null) return;
+    if (href !== null || !window) return;
 
     const newHref = new URL(
       pathname,
