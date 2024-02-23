@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.4
+
+### Patch Changes
+
+- c509eff: fix href initialization with window in useeffect
+
 ## 0.3.3
 
 ### Patch Changes
