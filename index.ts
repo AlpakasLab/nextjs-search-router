@@ -27,7 +27,7 @@ const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
   useEffect(() => {
     if (href !== null || typeof window === "undefined") return;
 
-    const newHref = new URL(pathname, window.location.hostname);
+    const newHref = new URL(pathname, props?.baseUrl ?? window.location.origin);
     searchParams.forEach((value, key) => {
       newHref.searchParams.set(key, value);
     });
@@ -74,7 +74,7 @@ const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
 
     const baseHref = new URL(
       pathname,
-      props?.baseUrl ?? window.location.hostname
+      props?.baseUrl ?? window.location.origin
     );
     router.replace(baseHref.toString());
   };
