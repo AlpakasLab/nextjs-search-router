@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.7
+
+### Patch Changes
+
+- 968a5ea: trying to fix invalid base url
+
 ## 0.3.6
 
 ### Patch Changes
