@@ -17,7 +17,7 @@ interface SearchRouterProps {
 interface SearchRouterReturn {
   addRouteParam: (paramName: string, paramValue: string) => void;
   updateRouteParam: (paramName: string, paramValue: string) => void;
-  removeRouteParam: (paramName: string, paramValue: string) => void;
+  removeRouteParam: (paramName: string, paramValue?: string) => void;
   resetRoute: () => void;
   dispatch: () => void;
   searchParams: ReadonlyURLSearchParams;
