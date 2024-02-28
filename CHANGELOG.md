@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.9
+
+### Patch Changes
+
+- 04e7a9f: fix remove route param and add query params export
+
 ## 0.3.8
 
 ### Patch Changes
