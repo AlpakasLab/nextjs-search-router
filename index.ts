@@ -2,7 +2,12 @@
 
 import "client-only";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  usePathname,
+  useRouter,
+  useSearchParams,
+  type ReadonlyURLSearchParams,
+} from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface SearchRouterProps {
@@ -15,6 +20,7 @@ interface SearchRouterReturn {
   removeRouteParam: (paramName: string, paramValue: string) => void;
   resetRoute: () => void;
   dispatch: () => void;
+  searchParams: ReadonlyURLSearchParams;
 }
 
 const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
@@ -51,8 +57,13 @@ const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
     href.searchParams.set(paramName, paramValue);
   };
 
-  const removeRouteParam = (paramName: string, paramValue: string): void => {
+  const removeRouteParam = (paramName: string, paramValue?: string): void => {
     if (!href) throw new Error("Cannot get base url");
+
+    if (paramValue === undefined) {
+      href.searchParams.delete(paramName);
+      return;
+    }
 
     const param = searchParams.get(paramName);
     if (!param) return;
@@ -91,6 +102,7 @@ const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
     removeRouteParam,
     resetRoute,
     dispatch,
+    searchParams,
   };
 };
 
