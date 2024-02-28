@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.3.10
+
+### Patch Changes
+
+- 4077bea: fix typescript issue with remove route param
+
 ## 0.3.9
 
 ### Patch Changes
