@@ -10,10 +10,6 @@ import {
 } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface SearchRouterProps {
-  baseUrl?: string;
-}
-
 interface SearchRouterReturn {
   addRouteParam: (paramName: string, paramValue: string) => void;
   updateRouteParam: (paramName: string, paramValue: string) => void;
@@ -23,45 +19,35 @@ interface SearchRouterReturn {
   searchParams: ReadonlyURLSearchParams;
 }
 
-const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
+const useSearchRouter = (): SearchRouterReturn => {
   const router = useRouter();
-  const pathname = usePathname() ?? "/";
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [href, setHref] = useState<URL | null>(null);
+  const [params, setParams] = useState<URLSearchParams | null>(null);
 
   useEffect(() => {
-    if (href !== null || typeof window === "undefined") return;
-
-    const newHref = new URL(pathname, props?.baseUrl ?? window.location.origin);
-    searchParams.forEach((value, key) => {
-      newHref.searchParams.set(key, value);
-    });
-
-    setHref(newHref);
-  }, [href, pathname, searchParams]);
+    setParams(new URLSearchParams(searchParams.toString()));
+  }, [searchParams]);
 
   const addRouteParam = (paramName: string, paramValue: string): void => {
-    if (!href) throw new Error("Cannot get base url");
+    if (!params) throw new Error("Cannot get base url");
 
     const param = searchParams.get(paramName);
-    href.searchParams.set(
-      paramName,
-      param ? `${param},${paramValue}` : paramValue
-    );
+    params.set(paramName, param ? `${param},${paramValue}` : paramValue);
   };
 
   const updateRouteParam = (paramName: string, paramValue: string): void => {
-    if (!href) throw new Error("Cannot get base url");
+    if (!params) throw new Error("Cannot get base url");
 
-    href.searchParams.set(paramName, paramValue);
+    params.set(paramName, paramValue);
   };
 
   const removeRouteParam = (paramName: string, paramValue?: string): void => {
-    if (!href) throw new Error("Cannot get base url");
+    if (!params) throw new Error("Cannot get base url");
 
     if (paramValue === undefined) {
-      href.searchParams.delete(paramName);
+      params.delete(paramName);
       return;
     }
 
@@ -74,26 +60,22 @@ const useSearchRouter = (props?: SearchRouterProps): SearchRouterReturn => {
     if (paramRemoveIndex === -1) return;
     paramItemsArray.splice(paramRemoveIndex, 1);
     if (paramItemsArray.length > 0) {
-      href.searchParams.set(paramName, paramItemsArray.join(","));
+      params.set(paramName, paramItemsArray.join(","));
     } else {
-      href.searchParams.delete(paramName);
+      params.delete(paramName);
     }
   };
 
   const resetRoute = (): void => {
     if (typeof window === "undefined") return;
 
-    const baseHref = new URL(
-      pathname,
-      props?.baseUrl ?? window.location.origin
-    );
+    const baseHref = new URL(pathname, window.location.origin);
     router.replace(baseHref.toString());
   };
 
   const dispatch = (): void => {
-    if (!href) throw new Error("Cannot get base url");
-
-    router.push(href.toString());
+    if (!params) throw new Error("Cannot get base url");
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return {
