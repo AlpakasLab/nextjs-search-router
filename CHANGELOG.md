@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.4.0
+
+### Minor Changes
+
+- 54ff01f: update pathname and href uses and remove baseurl configuration
+
 ## 0.3.10
 
 ### Patch Changes
