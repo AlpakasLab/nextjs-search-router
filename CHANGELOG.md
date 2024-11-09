@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.5.0
+
+### Minor Changes
+
+- b4266cb: update library functions and documentation
+
 ## 0.4.0
 
 ### Minor Changes
