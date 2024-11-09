@@ -10,14 +10,18 @@ import {
 } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface SearchRouterReturn {
-  addRouteParam: (paramName: string, paramValue: string) => void;
-  updateRouteParam: (paramName: string, paramValue: string) => void;
-  removeRouteParam: (paramName: string, paramValue?: string) => void;
+type RouteParam = { name: string; value: string };
+type RouteParamDelete = Pick<RouteParam, "name"> &
+  Partial<Pick<RouteParam, "value">>;
+
+type SearchRouterReturn = {
+  addRouteParam: (param: RouteParam) => void;
+  updateRouteParams: (param: RouteParam | RouteParam[]) => void;
+  removeRouteParam: (param: RouteParamDelete) => void;
   resetRoute: () => void;
   dispatch: () => void;
   searchParams: ReadonlyURLSearchParams;
-}
+};
 
 const useSearchRouter = (): SearchRouterReturn => {
   const router = useRouter();
@@ -30,39 +34,43 @@ const useSearchRouter = (): SearchRouterReturn => {
     setParams(new URLSearchParams(searchParams.toString()));
   }, [searchParams]);
 
-  const addRouteParam = (paramName: string, paramValue: string): void => {
+  const addRouteParam = (param: RouteParam): void => {
     if (!params) throw new Error("Cannot get base url");
-
-    const param = searchParams.get(paramName);
-    params.set(paramName, param ? `${param},${paramValue}` : paramValue);
+    const currentParam = searchParams.get(param.name);
+    params.set(
+      param.name,
+      currentParam ? `${currentParam},${param.value}` : param.value
+    );
   };
 
-  const updateRouteParam = (paramName: string, paramValue: string): void => {
+  const updateRouteParams = (param: RouteParam | RouteParam[]): void => {
     if (!params) throw new Error("Cannot get base url");
-
-    params.set(paramName, paramValue);
+    const paramsToUpdate = Array.isArray(param) ? param : [param];
+    paramsToUpdate.forEach((paramItem) => {
+      params.set(paramItem.name, paramItem.value);
+    });
   };
 
-  const removeRouteParam = (paramName: string, paramValue?: string): void => {
+  const removeRouteParam = (param: RouteParamDelete): void => {
     if (!params) throw new Error("Cannot get base url");
 
-    if (paramValue === undefined) {
-      params.delete(paramName);
+    if (param.value === undefined) {
+      params.delete(param.name);
       return;
     }
 
-    const param = searchParams.get(paramName);
-    if (!param) return;
-    const paramItemsArray = param.split(",");
+    const currentParam = searchParams.get(param.name);
+    if (!currentParam) return;
+    const paramItemsArray = currentParam.split(",");
     const paramRemoveIndex = paramItemsArray.findIndex(
-      (paramItem: string) => paramItem === paramValue
+      (paramItem: string) => paramItem === param.value
     );
     if (paramRemoveIndex === -1) return;
     paramItemsArray.splice(paramRemoveIndex, 1);
     if (paramItemsArray.length > 0) {
-      params.set(paramName, paramItemsArray.join(","));
+      params.set(param.name, paramItemsArray.join(","));
     } else {
-      params.delete(paramName);
+      params.delete(param.name);
     }
   };
 
@@ -80,7 +88,7 @@ const useSearchRouter = (): SearchRouterReturn => {
 
   return {
     addRouteParam,
-    updateRouteParam,
+    updateRouteParams,
     removeRouteParam,
     resetRoute,
     dispatch,
