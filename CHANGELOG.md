@@ -1,5 +1,11 @@
 # @alpakaslab/nextjs-search-router
 
+## 0.6.0
+
+### Minor Changes
+
+- da37f4f: add generateLink function and unify hook functions
+
 ## 0.5.0
 
 ### Minor Changes
