@@ -12,7 +12,7 @@
     "dev": "tsup index.ts --format cjs,esm --watch",
     "build": "tsup index.ts --format cjs,esm --dts",
     "lint": "tsc",
-    "release": "pnpm build && changeset publish"
+    "ci:publish": "pnpm build && changeset version && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.1",
