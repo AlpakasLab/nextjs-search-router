@@ -6,6 +6,7 @@ on:
 
 permissions:
   id-token: write
+  pull-requests: write
   contents: read
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
@@ -16,6 +17,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Install pnpm
         uses: pnpm/action-setup@v4
       - name: Setup Node.js 22
@@ -24,7 +27,6 @@ jobs:
           node-version: 22.x
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
-          package-manager-cache: false
       - uses: actions/cache@v4
         with:
           path: |
@@ -44,4 +46,3 @@ jobs:
           publish: pnpm ci:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
